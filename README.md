@@ -1,0 +1,2 @@
+# gosdk
+go common funtion
