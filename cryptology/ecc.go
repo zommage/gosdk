@@ -46,7 +46,7 @@ func Testecc() {
 	// }
 
 	// 初始化 ecc key
-	prk, puk, err := initEccKey()
+	prk, puk, err := InitEccKey(eccPubKey1, eccPriKey1)
 	if err != nil {
 		fmt.Println("init ecc key err: ", err)
 		return
@@ -129,11 +129,12 @@ func CreateEccKey(randKey string) (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 }
 
 // 初始化 ecc key
-func initEccKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
+func InitEccKey(eccPubKey, eccPrk []byte) (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 	var prk *ecdsa.PrivateKey
 	var puk *ecdsa.PublicKey
 	//curve := elliptic.P256()
-	eccPubKey := eccPubKey1
+	//eccPubKey := eccPubKey1
+	//eccPrk := eccPriKey1
 	var err error
 	ok := false
 
@@ -150,7 +151,6 @@ func initEccKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 
 	pubKeyblock, _ := pem.Decode(eccPubKey)
 	if pubKeyblock == nil {
-		fmt.Println("pem decode err")
 		return nil, puk, fmt.Errorf("public key error")
 	}
 
@@ -162,10 +162,6 @@ func initEccKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 	if !ok {
 		return nil, puk, errors.New("not ecdsa public key")
 	}
-
-	eccPrk := eccPriKey1
-
-	fmt.Println("ecc private key: ", string(eccPrk))
 
 	// ecdsa 私钥文件的读取
 	block, _ := pem.Decode(eccPrk)
@@ -185,7 +181,6 @@ func initEccKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 	prk, err = x509.ParseECPrivateKey(block.Bytes)
 	if err != nil {
 		tmpStr := fmt.Sprintf("parse ec private key err: %v", err)
-		fmt.Println(tmpStr)
 		return nil, puk, errors.New(tmpStr)
 	}
 
