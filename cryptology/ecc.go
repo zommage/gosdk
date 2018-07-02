@@ -167,7 +167,6 @@ func InitEccKey(eccPubKey, eccPrk []byte) (*ecdsa.PrivateKey, *ecdsa.PublicKey, 
 	block, _ := pem.Decode(eccPrk)
 	if block == nil {
 		tmpStr := fmt.Sprintf("ecc private pem decode err")
-		fmt.Println(tmpStr)
 		return nil, puk, errors.New(tmpStr)
 	}
 
