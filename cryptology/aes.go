@@ -111,3 +111,38 @@ func PKCS5UnPadding(origData []byte) []byte {
 	unpadding := int(origData[length-1])
 	return origData[:(length - unpadding)]
 }
+
+// aes cfb 模式加密
+func AesCfbEncrypt(msg, key []byte) ([]byte, error) {
+	var iv = []byte(key)[:aes.BlockSize]
+	encrypted := make([]byte, len(msg))
+	aesBlockEncrypter, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aesEncrypter := cipher.NewCFBEncrypter(aesBlockEncrypter, iv)
+	aesEncrypter.XORKeyStream(encrypted, []byte(msg))
+	return encrypted, nil
+}
+
+//aes cfb模式 解密
+func AesCfbDecrypt(encryptMsg, key []byte) (decryptedByte []byte, err error) {
+	defer func() {
+		//错误处理
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
+	var iv = []byte(key)[:aes.BlockSize]
+	decrypted := make([]byte, len(encryptMsg))
+	var aesBlockDecrypter cipher.Block
+	aesBlockDecrypter, err = aes.NewCipher([]byte(key))
+	if err != nil {
+		return nil, err
+	}
+	aesDecrypter := cipher.NewCFBDecrypter(aesBlockDecrypter, iv)
+	aesDecrypter.XORKeyStream(decrypted, encryptMsg)
+
+	return decrypted, nil
+}
